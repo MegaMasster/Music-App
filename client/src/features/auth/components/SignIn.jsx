@@ -4,8 +4,14 @@ import { useForm } from "react-hook-form"
 import passwordIcon from "../../../assets/images/password-icon.png"
 import emailIcon from "../../../assets/images/email-icon.png"
 import AuthAnim from '../../../shared/ui/authAnimation/authAnim'
+import useAuthStore from '../../../shared/stores/useAuthStore'
 
 const SignIn = () => {
+
+    const {
+        setIsAuthenticated,
+        setIsEmailVerified
+    } = useAuthStore()
 
     const {
         register,
@@ -14,6 +20,8 @@ const SignIn = () => {
     } = useForm({mode: "onChange"})
 
     const onSubmit = (data) => {
+        setIsAuthenticated(true)
+        setIsEmailVerified(true)
         console.log(data)
     }
 

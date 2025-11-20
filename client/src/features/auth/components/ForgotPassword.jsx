@@ -28,10 +28,7 @@ const ForgotPassword = () => {
     }
 
     return (
-
-
         <main className="wrapper">
-
             {isSendingEmail ? (
                 <div className='wrapper'>
 
@@ -104,7 +101,6 @@ const ForgotPassword = () => {
                         </button>
                     </form>
                 </AuthAnim>
-
             )}
         </main>
     )
