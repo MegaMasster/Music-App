@@ -4,6 +4,8 @@ import { BrowserRouter , Routes , Route , Navigate } from "react-router-dom"
 import { ROUTES } from "./routes"
 import PublicRoute from "./guards/PublicRoute"
 import ProtectedRoute from "./guards/ProtectedRoute"
+import VerifyEmailRoute from "./guards/VerifyEmailRoute"
+import UserNameRoute from "./guards/UserNameRoute"
 
 const SignInPage = lazy(() => import("../pages/authPages/SignInPage"))
 const SignUpPage = lazy(() => import("../pages/authPages/SignUpPage"))
@@ -11,19 +13,24 @@ const ForgotPassPage = lazy(() => import("../pages/authPages/ForgotPassPage"))
 const NotFoundPage = lazy(() => import("../pages/errorPages/NotFoundPage"))
 const IndexPage = lazy(() => import("../pages/indexPage/IndexPage"))
 const VerifyEmailPage = lazy(() => import("../pages/authPages/VerifyEmailPage"))
+const UserNamePage = lazy(() => import("../pages/authPages/UserNamePage"))
 
 const Router = () => { 
 
     return (
         <BrowserRouter>
 
-            <Suspense fallback={null}>
+            <Suspense fallback={
+                <div className="wrapper">
+                    <p className="text-lg text-amber-600">Loading...</p>
+                </div>
+            }>
 
                 <Routes>
 
                     <Route 
                         path = {ROUTES.ROOT} 
-                        element = { <Navigate to={ROUTES.SIGN_IN}/> }
+                        element = {<Navigate to={ROUTES.SIGN_IN}/>}
                     />
 
                     <Route
@@ -56,15 +63,24 @@ const Router = () => {
                     <Route
                         path={ROUTES.VERIFY_EMAIL}
                         element = {
-                            <ProtectedRoute>
+                            <VerifyEmailRoute>
                                 <VerifyEmailPage />
-                            </ProtectedRoute>
+                            </VerifyEmailRoute>
+                        }
+                    />
+
+                    <Route
+                        path={ROUTES.USER_NAME}
+                        element = {
+                            <UserNameRoute>
+                                <UserNamePage/>
+                            </UserNameRoute>
                         }
                     />
 
                     <Route
                         path={ROUTES.INDEX}
-                        element={
+                        element = {
                             <ProtectedRoute>
                                 <IndexPage />
                             </ProtectedRoute>
@@ -73,7 +89,7 @@ const Router = () => {
 
                     <Route
                         path="*"
-                        element={
+                        element = {
                             <NotFoundPage />
                         }
                     />

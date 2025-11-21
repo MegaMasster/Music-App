@@ -130,7 +130,7 @@ const SignUp = () => {
                         hover:bg-amber-400 hover:translate-x-2 hover:cursor-pointer active:scale-95
                         transition-all duration-250'
                     >
-                        Sign up
+                        Continue
                     </button>
                 </form>
             </AuthAnim>

@@ -104,7 +104,7 @@ const SignIn = () => {
                         hover:bg-amber-400 hover:translate-x-2 hover:cursor-pointer active:scale-95
                         transition-all duration-250'
                     >
-                        Sign in
+                        Continue
                     </button>
                 </form>
                 <div className='flex justify-center items-center'>
