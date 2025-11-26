@@ -1,14 +1,24 @@
-import { Link } from 'react-router-dom'
-import { useRef, useState } from 'react'
+import { Link , useLocation} from 'react-router-dom'
+import { useRef, useState , useEffect } from 'react'
 
 import AuthAnim from '../../../shared/ui/authAnimation/authAnim'
 import useAuthStore from '../../../shared/stores/useAuthStore'
 
 const VerifyEmail = () => {
+
+    const location = useLocation()
+
     const { 
         setIsEmailVerified,
-        setIsAuthenticated
+        setIsAuthenticated,
+        resetError
     } = useAuthStore()
+
+    useEffect(() => {
+        document.title = "Verify email - Just for you"
+        resetError()
+    } , [location])
+
     const inputRefs = useRef([])
     const [values, setValues] = useState(Array(6).fill(''))
 

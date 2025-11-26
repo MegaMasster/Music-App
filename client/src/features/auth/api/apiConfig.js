@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_API_URL
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const request = async (endpoint , options={}) => {
     const url = `${BASE_URL}${endpoint}`
@@ -32,10 +32,11 @@ const request = async (endpoint , options={}) => {
 
         return {
             success: true,
+            email: data.email,
             access_token: data.token
         }
     } catch (error) {
-        clearTimeout(timeout)
+        clearTimeout(timer)
 
         if (error.name === "AbortError") {
             return {

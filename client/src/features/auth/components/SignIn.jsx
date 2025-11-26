@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
+import { Link , useLocation } from 'react-router-dom'
 import { useForm } from "react-hook-form"
+import { useEffect } from 'react'
 
 import passwordIcon from "../../../assets/images/password-icon.png"
 import emailIcon from "../../../assets/images/email-icon.png"
@@ -8,10 +9,18 @@ import useAuthStore from '../../../shared/stores/useAuthStore'
 
 const SignIn = () => {
 
+    const location = useLocation()
+
     const {
         setIsAuthenticated,
-        setIsEmailVerified
+        setIsEmailVerified,
+        resetError
     } = useAuthStore()
+
+    useEffect(() => {
+        document.title = "Sign In - Just for you"
+        resetError()
+    } , [location])
 
     const {
         register,
@@ -27,7 +36,6 @@ const SignIn = () => {
 
     return (
         <main className="wrapper">
-
             <AuthAnim className="flex flex-col justify-evenly w-90 h-80 rounded-2x">
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl">Sign in</h1>

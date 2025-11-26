@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { Link , useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import { useForm } from "react-hook-form"
 
 import nameIcon from "../../../assets/images/name-icon.png"
@@ -7,10 +8,18 @@ import useAuthStore from '../../../shared/stores/useAuthStore'
 
 const UserName = () => {
 
+    const location = useLocation()
+
     const {
         setLoading ,
-        setUserName
+        setUserName,
+        resetError
     } = useAuthStore()
+
+    useEffect(() => {
+        document.title = "Sign In - Just for you"
+        resetError()
+    } , [location])
 
     const {
         register,

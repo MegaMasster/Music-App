@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
+import { Link , useLocation } from 'react-router-dom'
 import { useForm } from "react-hook-form"
+import { useEffect } from 'react'
 
 import emailIcon from "../../../assets/images/email-icon.png"
 import AuthAnim from '../../../shared/ui/authAnimation/authAnim'
@@ -7,13 +8,21 @@ import useAuthStore from '../../../shared/stores/useAuthStore'
 
 const ForgotPassword = () => {
 
+    const location = useLocation()
+
     const {
         setLoading , 
         setIsSendingEmail,
         isSendingEmail,
         userEmail,
-        setUserEmail
+        setUserEmail,
+        resetError
     } = useAuthStore()
+
+    useEffect(() => {
+        document.title = "Forgot password - Just for you"
+        resetError()
+    } , [location])
 
     const {
         register,

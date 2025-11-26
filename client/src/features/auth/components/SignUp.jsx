@@ -1,17 +1,31 @@
-import { Link } from 'react-router-dom'
+import { Link , useLocation } from 'react-router-dom'
 import { useForm } from "react-hook-form"
+import { useEffect } from 'react'
 
 import passwordIcon from "../../../assets/images/password-icon.png"
 import emailIcon from "../../../assets/images/email-icon.png"
 import AuthAnim from '../../../shared/ui/authAnimation/authAnim'
 import useAuthStore from '../../../shared/stores/useAuthStore'
 import { authApi } from '../api/authApi'
+import AuthErrorHandler from "../../utils/auth/authErrorHandler"
 
 const SignUp = () => {
 
+    const location = useLocation()
+
     const {
-        setIsAuthenticated
+        setIsAuthenticated,
+        setLoading,
+        isLoading,
+        resetError,
+        setServerError,
+        serverError
     } = useAuthStore()
+
+    useEffect(() => {
+        document.title = "Sign Up - Just for you"
+        resetError()
+    } , [location])
 
     const {
         register,
@@ -23,31 +37,54 @@ const SignUp = () => {
     const watchPassword = watch("password")
 
     const onSubmit = async (userData) => {
-        setIsAuthenticated(true)
-
+        resetError()
+        setLoading(true)
         try {
             const result = await authApi.signUp(userData)
-            if (result) {
-                // делаем грязь
+            if (result.success) {
+                localStorage.setItem("user_email" , result.email)
+                setIsAuthenticated(true)
+            } else {
+                localStorage.removeItem("user_email")
+                const errorMessage = AuthErrorHandler.handlerSignUpError(result)
+                setServerError(errorMessage)
             }
         } catch(error) {
-            
+            localStorage.removeItem("user_email")
+            const errorMessage = AuthErrorHandler.handlerSignUpError(error)
+            setServerError(errorMessage)
+        } finally {
+            setLoading(false)
         }
 
     }
 
     return (
         <main className="wrapper">
+            
+            {isLoading && (
+                <div className="fixed inset-0 bg-opacity-5 backdrop-blur-md flex justify-center items-center z-50">
+                    <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
 
             <AuthAnim className="flex flex-col justify-evenly w-90 h-105 rounded-2x">
-                <div className="flex justify-between items-center">
-                    <h1 className="text-2xl">Sign up</h1>
-                    <div className='flex justify-center items-end h-7 w-25 rounded'>
-                        <Link to="/sign-in" className="underline opacity-40
-                            hover:text-amber-600 transition-colors"> 
-                            Sign in
-                        </Link>
+                <div className="flex flex-col justify-between items-center">
+
+                    <div className='flex justify-between w-full'>
+                        <h1 className="text-2xl">Sign up</h1>
+                        <div className='flex justify-center items-end h-7 rounded'>
+                            <Link to="/sign-in" className="underline opacity-40
+                                hover:text-amber-600 transition-colors"> 
+                                Sign in
+                            </Link>
+                        </div>
                     </div>
+
+                    <div className='flex w-full justify-center items-center mt-5'>
+                        <p className='text-md text-rose-600'>{serverError}</p>
+                    </div>
+
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-evenly items-center h-[65%] ">
@@ -64,6 +101,7 @@ const SignUp = () => {
                             <input 
                                 type="email"
                                 placeholder='Email'
+                                disabled={isLoading}
                                 className="w-full h-11 pl-12 rounded border border-gray-600 outline-0 
                                 focus:border-gray-500 transition-all duration-300" 
                                 {...register("email" , {
@@ -91,6 +129,7 @@ const SignUp = () => {
                             <input 
                                 type="password" 
                                 placeholder='Password'
+                                disabled={isLoading}
                                 className="w-full h-11 pl-12 rounded border border-gray-600 outline-0
                                 focus:border-gray-500 transition-all duration-250" 
                                 {...register("password" , {
@@ -122,6 +161,7 @@ const SignUp = () => {
                             <input 
                                 type="password" 
                                 placeholder='Repeat password'
+                                disabled={isLoading}
                                 className="w-full h-11 pl-12 rounded border border-gray-600 outline-0
                                 focus:border-gray-500 transition-all duration-250" 
                                 {...register("repeatPassword" , {
@@ -136,11 +176,12 @@ const SignUp = () => {
 
                     <button 
                         type='submit' 
+                        disabled={isLoading}
                         className='text-lg w-full h-11 bg-amber-500 rounded 
                         hover:bg-amber-400 hover:translate-x-2 hover:cursor-pointer active:scale-95
                         transition-all duration-250'
                     >
-                        Continue
+                        {isLoading ? "Signing Up" : "Continue"}
                     </button>
                 </form>
             </AuthAnim>

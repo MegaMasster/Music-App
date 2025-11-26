@@ -8,6 +8,7 @@ const useAuthStore = create(
         isAuthenticated: false,
         isEmailVerified: false,
         isUserNameSet: false,
+        serverError: "",
 
         setLoading: (loadingState) => set({isLoading: loadingState}),
         
@@ -17,7 +18,10 @@ const useAuthStore = create(
         setIsAuthenticated: (isAuthenticatedState) => set({isAuthenticated: isAuthenticatedState}),
         setIsEmailVerified: (isEmailVerifiedState) => set({isEmailVerified: isEmailVerifiedState}),
 
-        setUserName: (isUserNameState) => set({isUserNameSet: isUserNameState})
+        setUserName: (isUserNameState) => set({isUserNameSet: isUserNameState}),
+
+        setServerError: (error) => set({serverError: error}),
+        resetError: () => set({serverError: ""})
     })
 )
 export default useAuthStore
