@@ -48,12 +48,9 @@ class UserService {
 
             return { 
                 success: true,
-                needsVerification: true,
                 verifyCode: verifyCode,
-                message: "Verification code sent to email." 
             }
         } catch(error){
-            console.error("SignUp error:", error)
             throw error
         }
     }
@@ -61,32 +58,45 @@ class UserService {
 
     async verifyEmail(data) {
         try {
+            console.log('Verify email data:', data)
+            
             const {email , code} = data
             RequestValidation.verifyCodeValidation(data)
 
-            const { rows } = await pool.query(`SELECT * FROM pending_users 
+            const { rows } = await pool.query(
+                `SELECT * FROM pending_users 
                 WHERE email = $1 and verify_code = $2` ,
             [email , code])
 
-            const pendingUser = rows[0]
-
-            if(new Date() > new Date(pendingUser.expires_at)) {
-                await this.cleanExpiredUser(email)
-                throw new Error("The code has expired.")
+            if (!rows[0]) {
+                throw new Error("Invalid code")
             }
 
-            await pool.query(`INSERT INTO users (email , password) VALUES ($1 , $2)` ,
-                [pendingUser.email , pendingUser.password]
+            if(new Date() > new Date(rows[0].expires_at)) {
+                await this.cleanExpiredUser(email)
+                throw new Error("The code has expired")
+            }
+
+            const { rows: userRows } = await pool.query(
+                `INSERT INTO users (email , password) VALUES ($1 , $2) RETURNING id, email` ,
+                [rows[0].email , rows[0].password]
             )
 
-            await this.cleanExpiredUser(email)
+            const newUser = userRows[0]
 
-            const user = { id: pendingUser.id, email: pendingUser.email }
+            await pool.query(
+                `DELETE FROM pending_users WHERE email = $1`,
+                [email]
+            )
+
+            const user = { id: newUser.id, email: newUser.email }
             const token = await this.generateToken(user)
+
             return {
                 success: true,
                 access_token: token,
-                message: "Account verified."
+                id: newUser.id,
+                email: newUser.email
             }
         } catch (error) {
             console.error("Verify error:", error)

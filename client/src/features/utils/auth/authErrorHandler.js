@@ -18,7 +18,7 @@ class AuthErrorHandler {
         } else if (error.status === 408) {
             return "Server is busy, please try again later."
         } else if (error.status === 403) {
-            return "The token has expired."
+            return "The code has expired."
         } else {
             return "Server error. Try again later."
         }

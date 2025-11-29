@@ -12,9 +12,7 @@ const signUp = async (req , res) => {
         sendVerificationCode(req.body.email , result.verifyCode)
 
         res.status(201).json({
-            success: true, 
-            message: result.message,
-            needsVerification: result.needsVerification
+            success: true
         })
 
         console.log("Success sign up: " , result)
@@ -33,9 +31,11 @@ const verifyEmail = async (req , res) => {
             maxAge: 14 * 24 * 60 * 60 * 1000,
             path: '/'
         })
+
         res.status(201).json({
             success: true, 
-            message: result.message,
+            id: result.id,
+            email: result.email
         })
 
         console.log("Success verify: " , result)

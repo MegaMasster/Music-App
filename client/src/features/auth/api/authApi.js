@@ -7,8 +7,13 @@ export const authApi = {
         return response
     },
 
-    VerifyEmail: async (data) => {
-        const response = await api.post("api/auth/verifyemail" , data)
+    verifyEmail: async (data) => {
+        const response = await api.post("/api/auth/verify-email" , data)
+        return response
+    },
+
+    verifyToken: async () => {
+        const response = await api.get("/api/auth/verifyToken")
         return response
     }
 

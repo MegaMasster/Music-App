@@ -1,5 +1,8 @@
-import { lazy , Suspense } from "react"
+import { lazy , Suspense , useEffect } from "react"
 import { BrowserRouter , Routes , Route , Navigate } from "react-router-dom"
+
+import { authApi } from "../features/auth/api/authApi"
+import useAuthStore from "../shared/stores/useAuthStore"
 
 import { ROUTES } from "./routes"
 import PublicRoute from "./guards/PublicRoute"
@@ -14,6 +17,31 @@ const IndexPage = lazy(() => import("../pages/indexPage/IndexPage"))
 const VerifyEmailPage = lazy(() => import("../pages/authPages/VerifyEmailPage"))
 
 const Router = () => { 
+    const {
+        setIsAuthenticated,
+        setIsEmailVerified
+    } = useAuthStore()
+
+    useEffect(() => {
+        const verifyToken = async () => {
+            try {
+                const result = await authApi.verifyToken()
+
+                if (result.success) {
+                    setIsAuthenticated(true)
+                    setIsEmailVerified(true)
+                } else {
+                    setIsAuthenticated(false)
+                    setIsEmailVerified(false)
+                }
+            } catch (error) {
+                console.error("Token verification failed:", error)
+                setIsAuthenticated(false)
+                setIsEmailVerified(false)
+            }
+        }
+        verifyToken()
+    } , [])
 
     return (
         <BrowserRouter>

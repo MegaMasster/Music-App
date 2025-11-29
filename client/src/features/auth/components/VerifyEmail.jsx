@@ -50,20 +50,23 @@ const VerifyEmail = () => {
 
             console.log(" Sending request data:", requestData)
 
-            const result = await authApi.VerifyEmail(requestData)
+            const result = await authApi.verifyEmail(requestData)
 
             console.log("📥 Response from server:", result)
 
             if (result.success) {
                 setIsEmailVerified(true)
                 clearUserEmail()
+                setVerificationCode('')
             } else {
                 const errorMessage = AuthErrorHandler.handlerVerifyEmailError(result)
                 setServerError(errorMessage)
+                setVerificationCode('')
             }
         } catch (error) {
             const errorMessage = AuthErrorHandler.handlerVerifyEmailError(error)
             setServerError(errorMessage)
+            setVerificationCode('')
         } finally {
             setLoading(false)
         }
@@ -102,7 +105,7 @@ const VerifyEmail = () => {
                         </button>
                     </div>
 
-                    <div className="flex flex-col justify-center items-center mt-5">
+                    <div className="flex flex-col justify-center items-center mt-5 text-sm">
                         <p className="text-amber-100">We sent a passcode to</p>
                         <strong className='text-amber-200'>{userEmail}</strong>
                         <p className='text-amber-100'>Please check your inbox.</p>

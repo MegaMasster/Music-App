@@ -18,8 +18,8 @@ const request = async (endpoint , options={}) => {
     }
 
     try {
-        clearTimeout(timer)
         const response = await fetch(url , config)
+        clearTimeout(timer)
 
         if(!response.ok) {
             const errorData = await response.json()
@@ -33,7 +33,7 @@ const request = async (endpoint , options={}) => {
         return {
             success: true,
             email: data.email,
-            access_token: data.access_token
+            id: data.id
         }
     } catch (error) {
         clearTimeout(timer)
@@ -41,20 +41,20 @@ const request = async (endpoint , options={}) => {
         if (error.name === "AbortError") {
             return {
                 success: false,
+                message: "Request timeout",
                 status: 408
             }
         }
 
         return {
             success: false,
-            status: error.status || 500
+            status: error.status || 500,
+            message: error.message
         }
     }
 }
 
 
-
-// начало отсюда (вызываем в коде эти методы) и только потом в функцию request
 export const api = {
 
     post: (endpoint , data) => 
@@ -63,5 +63,12 @@ export const api = {
             credentials: "include",
             body: JSON.stringify(data)
         }),
+    
+    get: (endpoint) => 
+        request(endpoint , {
+            method: "GET",
+            credentials: "include"
+        })
+    
 
 }

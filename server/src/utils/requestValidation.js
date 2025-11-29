@@ -2,10 +2,6 @@ class RequestValidation {
 
     static signUpValidation(userData) {
         const { email, password } = userData
-
-        // if (username.length < 3) {
-        //     throw new Error("Invalid username format")
-        // }
         if (!email || !password) {
             throw new Error("Email and password are required")
         }

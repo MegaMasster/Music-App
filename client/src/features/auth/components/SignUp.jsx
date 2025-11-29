@@ -22,7 +22,7 @@ const SignUp = () => {
         serverError,
         isError,
         setUserEmail,
-        clearPersistedEmail
+        clearUserEmail
     } = useAuthStore()
 
     useEffect(() => {
@@ -48,12 +48,12 @@ const SignUp = () => {
                 setUserEmail(userData.email)
                 setIsAuthenticated(true)
             } else {
-                clearPersistedEmail()
+                clearUserEmail()
                 const errorMessage = AuthErrorHandler.handlerSignUpError(result)
                 setServerError(errorMessage)
             }
         } catch(error) {
-            clearPersistedEmail()
+            clearUserEmail()
             const errorMessage = AuthErrorHandler.handlerSignUpError(error)
             setServerError(errorMessage)
         } finally {
@@ -84,7 +84,7 @@ const SignUp = () => {
                 </div>
 
                 {isError && (
-                    <div className='flex w-full justify-center items-center'>
+                    <div className='flex w-full justify-center items-center mt-5'>
                         <p className='text-md text-rose-600'>{serverError}</p>
                     </div>
                 )} 
