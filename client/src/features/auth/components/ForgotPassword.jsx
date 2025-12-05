@@ -7,10 +7,9 @@ import AuthAnim from '../../../shared/ui/authAnimation/authAnim'
 import useAuthStore from '../../../shared/stores/useAuthStore'
 import { authApi } from '../api/authApi'
 import AuthErrorHandler from '../../utils/auth/authErrorHandler'
+import Loader from '../../../shared/ui/loader/Loader'
 
 const ForgotPassword = () => {
-
-    const location = useLocation()
 
     const {
         setLoading,
@@ -26,6 +25,7 @@ const ForgotPassword = () => {
         userEmail
     } = useAuthStore()
 
+    const location = useLocation()
     useEffect(() => {
         document.title = "Forgot password - AuroraSounds"
         resetError()
@@ -41,7 +41,6 @@ const ForgotPassword = () => {
         resetError()
         setLoading(true)
         try {
-            console.log(userData)
             const result = await authApi.forgotPassword(userData)
             if (result.success) {
                 setIsSendingEmail(true)
@@ -67,11 +66,7 @@ const ForgotPassword = () => {
     return (
         <main className="wrapper">
 
-            {isLoading && (
-                <div className="fixed inset-0 bg-opacity-5 backdrop-blur-md flex justify-center items-center z-50">
-                    <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                </div>
-            )}
+            <Loader/>
 
             {isSendingEmail ? (
                 <div className='wrapper'>

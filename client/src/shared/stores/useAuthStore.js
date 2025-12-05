@@ -9,28 +9,26 @@ const useAuthStore = create(
             userEmail: null,
             isAuthenticated: false,
             isEmailVerified: false,
-            serverError: "",
+            serverError: null,
             isError: false,
             isValidToken: false,
-            isEmailFound: false,
+            isPasswordReset: false,
 
             setLoading: (loadingState) => set({isLoading: loadingState}),
             
             setIsSendingEmail: (isSendingEmailState) => set({isSendingEmail: isSendingEmailState}),
-            setUserEmail: (email) => set({userEmail: email}),
 
             setIsAuthenticated: (isAuthenticatedState) => set({isAuthenticated: isAuthenticatedState}),
             setIsEmailVerified: (isEmailVerifiedState) => set({isEmailVerified: isEmailVerifiedState}),
 
             setServerError: (error) => set({serverError: error , isError: true}),
-            resetError: () => set({serverError: "" , isError: false}),
+            resetError: () => set({serverError: null , isError: false}),
 
             setUserEmail: (email) => set({userEmail: email}),
             clearUserEmail: () => set({userEmail : null}),
 
             setIsValidToken: (isValid) => set({isValidToken: isValid}),
-
-            setIsEmailFound: (isFound) => set({isEmailFound: isFound})
+            setIsPasswordReset: (isResetting) => set({isPasswordReset: isResetting})
     
         }) , {
             name: "temp_email_verification",

@@ -1,39 +1,36 @@
 import { useLocation , useParams , Link  } from 'react-router-dom'
 import { useForm } from "react-hook-form"
-import { useEffect , useState } from 'react'
+import { useEffect } from 'react'
 
 import passwordIcon from "../../../assets/images/password-icon.png"
 import AuthAnim from '../../../shared/ui/authAnimation/authAnim'
 import useAuthStore from '../../../shared/stores/useAuthStore'
 import { authApi } from '../api/authApi'
 import AuthErrorHandler from "../../utils/auth/authErrorHandler"
+import Loader from '../../../shared/ui/loader/Loader'
 
 const ResetPassword = () => {
 
     const {
-        setIsAuthenticated,
         setLoading,
         isLoading,
         resetError,
         setServerError,
         serverError,
         isError,
-        setUserEmail,
         clearUserEmail,
         userEmail,
         isValidToken,
         setIsValidToken,
-        setIsEmailFound,
-        isEmailFound
+        setIsPasswordReset,
+        isPasswordReset
     } = useAuthStore()
-
 
     const location = useLocation()
     useEffect(() => {
         document.title = "Reset error - AuroraSounds"
         resetError()
     } , [location])
-
 
     const { token } = useParams()
     useEffect(() => {
@@ -43,17 +40,17 @@ const ResetPassword = () => {
         checkUrlToken(checkTokenData)
     } , [token])
 
-
     const {
         register,
         handleSubmit, 
         watch,
         formState: {errors}
     } = useForm({mode: "onChange"})
+    
     const watchPassword = watch("password")
 
-
     const checkUrlToken = async (checkTokenData) => {
+        resetError()
         setLoading(true)
         try {
             const result = await authApi.checkResetToken(checkTokenData)
@@ -65,14 +62,13 @@ const ResetPassword = () => {
                 setIsValidToken(false)
             }
         } catch (error) {
-            const errorMessage = AuthErrorHandler.handleCheckResetToken(result)
+            const errorMessage = AuthErrorHandler.handleCheckResetToken(error)
             setServerError(errorMessage)
             setIsValidToken(false)
         } finally {
             setLoading(false)
         }
     }
-
 
     const onSubmit = async (userData) => {
         resetError()
@@ -84,7 +80,8 @@ const ResetPassword = () => {
             }
             const result = await authApi.resetPassword(resetPasswordData)
             if (result.success) {
-                setServerError("OK")
+                setIsPasswordReset(true)
+                clearUserEmail()
             } else {
                 const errorMessage = AuthErrorHandler.handleResetPassword(result)
                 setServerError(errorMessage)
@@ -97,34 +94,11 @@ const ResetPassword = () => {
         }
     }
 
-
-    // if (!isEmailFound) {
-    //     return (
-    //         <div className='wrapper'>
-    //             <div className='flex flex-col justify-center items-center'>
-    //                 <div className="flex justify-center items-center">
-    //                     <h1 className="">Error</h1>
-    //                     <div className="h-20 w-px bg-white"></div>
-    //                     <p className="">Unknown error, your email was not found, <br/> please enter your email again.</p>
-    //                 </div>
-    //                 <Link to="/forgot-pass" className="opacity-40 underline hover:text-amber-600 transition-colors">
-    //                     Enter your email again
-    //                 </Link>
-    //             </div>
-    //         </div>
-    //     )
-    // }
-
-
     if (!isValidToken) {
         return (
             <div className='wrapper'>
 
-                {isLoading && (
-                    <div className="fixed inset-0 bg-opacity-5 backdrop-blur-md flex justify-center items-center z-50">
-                        <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                )}
+                <Loader/>
 
                 <div className="flex flex-col items-center gap-5">
                     <div className="flex items-center gap-5">
@@ -140,15 +114,40 @@ const ResetPassword = () => {
         )
     }
 
+    if (isPasswordReset) {
+        return (
+            <div className='wrapper'>
+                <div className='flex flex-col justify-center items-center'>
+                    <h1 className="">Password changed successfully</h1>
+                    <Link to="/sign-in" className="opacity-40 underline hover:text-amber-600 transition-colors">
+                        Back to sign in
+                    </Link>
+                </div>
+            </div>
+        )
+    }
+
+    if (!userEmail) {
+        return (
+            <div className='wrapper'>
+                <div className='flex flex-col justify-center items-center'>
+                    <div className="flex justify-center items-center gap-5">
+                        <h1 className="">Error</h1>
+                        <div className="h-20 w-px bg-white"></div>
+                        <p className="">Unknown error, your email was not found, <br/> please enter your email again.</p>
+                    </div>
+                    <Link to="/forgot-pass" className="opacity-40 underline hover:text-amber-600 transition-colors">
+                        Enter your email again
+                    </Link>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <main className="wrapper">
             
-            {isLoading && (
-                <div className="fixed inset-0 bg-opacity-5 backdrop-blur-md flex justify-center items-center z-50">
-                    <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                </div>
-            )}
+            <Loader/>
 
             <AuthAnim className="flex flex-col justify-evenly w-90 h-85 rounded-2x">
 

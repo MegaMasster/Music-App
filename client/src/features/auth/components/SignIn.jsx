@@ -8,10 +8,9 @@ import AuthAnim from '../../../shared/ui/authAnimation/authAnim'
 import useAuthStore from '../../../shared/stores/useAuthStore'
 import { authApi } from '../api/authApi'
 import AuthErrorHandler from '../../utils/auth/authErrorHandler'
+import Loader from '../../../shared/ui/loader/Loader'
 
 const SignIn = () => {
-
-    const location = useLocation()
 
     const {
         setIsAuthenticated,
@@ -22,10 +21,10 @@ const SignIn = () => {
         setServerError,
         serverError,
         isError,
-        setUserEmail,
         clearUserEmail
     } = useAuthStore()
 
+    const location = useLocation()
     useEffect(() => {
         document.title = "Sign In - AuroraSounds"
         resetError()
@@ -61,11 +60,7 @@ const SignIn = () => {
     return (
         <main className="wrapper">
 
-            {isLoading && (
-                <div className="fixed inset-0 bg-opacity-5 backdrop-blur-md flex justify-center items-center z-50">
-                    <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                </div>
-            )}
+            <Loader/>
 
             <AuthAnim className="flex flex-col justify-evenly w-90 h-80 rounded-2x">
 

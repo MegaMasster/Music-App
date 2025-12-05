@@ -6,10 +6,9 @@ import useAuthStore from '../../../shared/stores/useAuthStore'
 import { authApi } from '../api/authApi'
 import AuthErrorHandler from "../../utils/auth/authErrorHandler"
 import CodeInput from './codeInputs'
+import Loader from '../../../shared/ui/loader/Loader'
 
 const VerifyEmail = () => {
-
-    const location = useLocation()
 
     const { 
         setIsEmailVerified,
@@ -24,36 +23,27 @@ const VerifyEmail = () => {
         clearUserEmail
     } = useAuthStore()
 
-    const [verificationCode, setVerificationCode] = useState('')
-
+    const location = useLocation()
     useEffect(() => {
         document.title = "Verify email - AuroraSounds"
         resetError()
     } , [location])
 
-
+    const [verificationCode, setVerificationCode] = useState('')
+    
     const handleSubmit = async (e) => {
         e.preventDefault()
-
         if (!verificationCode || verificationCode.length !== 6) {
             return
         }
-
         resetError()
         setLoading(true)
-        
         try {
             const requestData = {
                 email: userEmail,
                 code: verificationCode
             }
-
-            console.log(" Sending request data:", requestData)
-
             const result = await authApi.verifyEmail(requestData)
-
-            console.log("📥 Response from server:", result)
-
             if (result.success) {
                 setIsEmailVerified(true)
                 clearUserEmail()
@@ -84,11 +74,7 @@ const VerifyEmail = () => {
     return (
         <main className="wrapper">
 
-            {isLoading && (
-                <div className="fixed inset-0 bg-opacity-5 backdrop-blur-md flex justify-center items-center z-50">
-                    <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                </div>
-            )}
+            <Loader/>
 
             <AuthAnim className="flex flex-col justify-evenly w-90 h-90 rounded-2x">
 

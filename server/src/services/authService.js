@@ -222,7 +222,7 @@ class UserService {
                 UPDATE users SET password = $1 WHERE id = $2`, 
                 [hashedPassword , result.user.id]
             )
-
+            console.log("Success reset pass: " , result)
             return{
                 success: true
             }
